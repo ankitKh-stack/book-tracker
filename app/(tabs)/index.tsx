@@ -6,11 +6,37 @@ import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import { useEffect,useState } from 'react';
+import { openDatabase } from '@/db/client';
+import { addBook, getAllBooks } from '@/db/books';
+import { Button } from 'react-native';
+
 
 export default function HomeScreen() {
+
+  const [books, setBooks] = useState<any[]>([]);
+
+  useEffect(() => {
+  openDatabase()
+    .then(() => getAllBooks())
+    .then((result) => setBooks(result))
+    .catch((err) => console.log('Database error ❌', err));
+}, []);
+
+async function handleAddTestBook() {
+  await addBook({
+    id: Date.now().toString(),
+    title: 'Crime and Punishment',
+    author: 'Fyodor Dostoevsky',
+    total_pages: 480,
+  });
+  const updated = await getAllBooks();
+  setBooks(updated);
+}
+
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#20444f' }}
       headerImage={
         <Image
           source={require('@/assets/images/partial-react-logo.png')}
@@ -21,6 +47,16 @@ export default function HomeScreen() {
         <ThemedText type="title">Hi Ankit!</ThemedText>
         <HelloWave />
       </ThemedView>
+
+      <Button title="Add test book" onPress={handleAddTestBook} />
+
+      {books.map((book: any) => (
+  <ThemedView key={book.id} style={{ padding: 12, borderBottomWidth: 1, borderColor: '#ccc' }}>
+    <ThemedText type="defaultSemiBold">{book.title}</ThemedText>
+    <ThemedText>{book.author}</ThemedText>
+  </ThemedView>
+))}
+
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step:1 Kharel</ThemedText>
         <ThemedText>
@@ -65,10 +101,10 @@ export default function HomeScreen() {
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <ThemedText type="subtitle">Canada's wonderland</ThemedText>
         <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
+          {`The world of wonderful `}
+          <ThemedText type="defaultSemiBold">cherry and rasberries</ThemedText> to get a fresh{' '}
           <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
