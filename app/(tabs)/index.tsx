@@ -23,16 +23,7 @@ export default function HomeScreen() {
     .catch((err) => console.log('Database error ❌', err));
 }, []);
 
-async function handleAddTestBook() {
-  await addBook({
-    id: Date.now().toString(),
-    title: 'Crime and Punishment',
-    author: 'Fyodor Dostoevsky',
-    total_pages: 480,
-  });
-  const updated = await getAllBooks();
-  setBooks(updated);
-}
+
 
   return (
     <ParallaxScrollView
@@ -48,7 +39,9 @@ async function handleAddTestBook() {
         <HelloWave />
       </ThemedView>
 
-      <Button title="Add test book" onPress={handleAddTestBook} />
+      <Link href="/add-book" asChild>
+      <Button title="Add a book" />
+       </Link>
 
       {books.map((book: any) => (
   <ThemedView key={book.id} style={{ padding: 12, borderBottomWidth: 1, borderColor: '#ccc' }}>
