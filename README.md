@@ -1,50 +1,54 @@
-# Welcome to your Expo app 👋
+# Book Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A reading tracker for Android and iPhone, built with React Native and Expo.
 
-## Get started
+> **Status:** early work in progress. Searching for books and saving them to your library work today; reading progress is next.
 
-1. Install dependencies
+## What it does now
 
-   ```bash
-   npm install
-   ```
+- **Search for books.** Type a title or ISBN and the app searches the [Google Books API](https://developers.google.com/books), showing the title and author of each result.
+- **Save books to your library.** Tap a result to save it on the phone with its title, author, ISBN-13 and page count.
+- **See your library.** The home screen lists the books you've saved, newest first.
 
-2. Start the app
+Everything is stored on the phone in SQLite. There is no account and no server.
 
-   ```bash
-   npx expo start
-   ```
+## Planned
 
-In the output, you'll find options to open the app in a
+- Reading sessions: log pages read and minutes spent per day (the `reading_sessions` table already exists in the schema).
+- Reading status (want to read, reading, finished) and current-page progress for each book.
+- Book covers in search results and the library (the search service already returns the cover URL).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Tech stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Expo SDK 54** with **Expo Router** (file-based navigation, bottom tabs)
+- **expo-sqlite** for local storage
+- **TypeScript**
+- **Google Books API** for search
 
-## Get a fresh project
+## Project structure
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+app/
+  (tabs)/index.tsx   Home: your library and the "Add a book" button
+  add-book.tsx       Search Google Books and save a result
+db/
+  schema.ts          Tables: books, reading_sessions
+  client.ts          Opens the database and creates the tables
+  books.ts           addBook, getAllBooks
+services/
+  bookSearch.ts      Google Books search, mapped to the fields the app uses
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Getting started
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npx expo start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Then scan the QR code with **Expo Go** on your phone, or press `a` for an Android emulator or `w` for the browser.
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Search needs a Google Books API key. Create one in the [Google Cloud console](https://console.cloud.google.com/apis/library/books.googleapis.com) and put it in `services/bookSearch.ts`. Don't commit a real key.
